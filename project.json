@@ -10,6 +10,7 @@
 
     "jsList" : [
         "src/loadassets.js",
-        "src/gamescript.js"
+        "src/app.js",
+        "src/BackgroundTile.js"
     ]
 }
