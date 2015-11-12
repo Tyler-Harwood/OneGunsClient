@@ -12,6 +12,12 @@ var width = 5;
 var height = 5;
 var eyeX = 0;
 var scale = 1;
+var pos = {x: 0, y: 0};
+var meh;
+var originalPosition = {x: 0, y: 0};
+var startPosition = {x: 0, y: 0};
+var currentPosition = {x: 0, y: 0};
+var layerPosition = {x: 0, y: 0};
 
 var game = cc.Layer.extend({
     init: function () {
@@ -25,8 +31,8 @@ var game = cc.Layer.extend({
             tileMap[i] = new Array(height);
         }
 
-        var startX = ((480-(width*64))/2);
-        var startY = ((480-(height*64))/2);
+        var startX = ((480 - (width * 64)) / 2);
+        var startY = ((480 - (height * 64)) / 2);
 
         for (var x = 0; x < width; x++) {
             for (var y = 0; y < height; y++) {
@@ -36,16 +42,55 @@ var game = cc.Layer.extend({
             }
         }
 
+        meh = new TestPlayer();
+
+        backgroundLayer.addChild(meh, 1);
+
+        cc.eventManager.addListener({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
+            onTouchBegan: this.onTouchBegan,
+            onTouchMoved: this.onTouchMoved,
+            onTouchEnded: this.onTouchEnded
+        }, this);
+
+        this.scheduleUpdate();
     },
     update: function (dt) {
-        //this.setPosition(cc.p(eyeX-=1,0));
+        //cc.log("jump");
+        this.setPosition(originalPosition.x+currentPosition.x-startPosition.x, originalPosition.y+currentPosition.y-startPosition.y);
+        layerPosition = this.getPosition();
         //this.setScale(scale+=dt,scale);
         //var eyeZ = cc.Camera.getZEye();
         //camera.setEye(eyeX += dt, 0, eyeZ);
         //camera.setCenter(eyeX += dt, 0, 0);
     },
-    onEnter:function () {
-        this._super();
-        this.scheduleUpdate();
+    onTouchBegan: function (touch, event) {
+        pos = touch.getLocation();
+        meh.setPosition(pos.x - originalPosition.x, pos.y - originalPosition.y);
+        startPosition = pos;
+        currentPosition = pos;
+
+        return true;
+    },
+
+    onTouchMoved: function (touch, event) {
+        //if (lastMovePosition == null) {
+        currentPosition = touch.getLocation();
+
+        //}
+        //pos = touch.getLocation();
+        //var test = touch.getLocation()
+        //this.setPosition(test);
+
+    },
+
+    onTouchEnded: function (touch, event) {
+        originalPosition = layerPosition;
+        startPosition = {x: 0, y: 0};
+        currentPosition = {x: 0, y: 0};
+        //pos = touch.getLocation();
+        //meh.setPosition(pos);
+
     }
 });
