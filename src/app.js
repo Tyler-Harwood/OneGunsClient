@@ -22,6 +22,7 @@ var tileText;
 var startX;
 var startY;
 var mousePosition = {x: 0, y: 0};
+var mouseScroll = 1;
 
 const spriteDimension = 64;
 
@@ -83,7 +84,8 @@ var game = cc.Layer.extend({
 
         cc.eventManager.addListener({
             event: cc.EventListener.MOUSE,
-            onMouseMove: this.onMouseMove
+            onMouseMove: this.onMouseMove,
+            onMouseScroll: this.onMouseScroll
         }, this);
 
         this.scheduleUpdate();
@@ -93,7 +95,8 @@ var game = cc.Layer.extend({
         backgroundLayer.setPosition(originalPosition.x + currentPosition.x - startPosition.x, originalPosition.y + currentPosition.y - startPosition.y);
         layerPosition = backgroundLayer.getPosition();
         tileText.setString(getCurrentTilePosition(mousePosition.x, mousePosition.y));
-        //this.setScale(scale+=dt,scale);
+        backgroundLayer.setScale(scale += (mouseScroll/1000));
+        mouseScroll = 0;
         //var eyeZ = cc.Camera.getZEye();
         //camera.setEye(eyeX += dt, 0, eyeZ);
         //camera.setCenter(eyeX += dt, 0, 0);
@@ -125,5 +128,8 @@ var game = cc.Layer.extend({
     },
     onMouseMove: function (event) {
         mousePosition = event.getLocation();
+    },
+    onMouseScroll: function (event) {
+        mouseScroll = event.getScrollY();
     }
 });
