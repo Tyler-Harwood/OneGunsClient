@@ -19,8 +19,6 @@ var startPosition = {x: 0, y: 0};
 var currentPosition = {x: 0, y: 0};
 var layerPosition = {x: 0, y: 0};
 var tileText;
-var startX;
-var startY;
 var mousePosition = {x: 0, y: 0};
 var mouseScroll = 1;
 
@@ -29,13 +27,8 @@ const spriteDimension = 64;
 var getCurrentTilePosition = function (x, y) {
     var backgroundPosition = backgroundLayer.getPosition();
 
-    var currentPosition = {
-        x: backgroundPosition.x + startX,
-        y: backgroundPosition.y + startY
-    };
-
-    var xPos = Math.floor((x - currentPosition.x) / spriteDimension);
-    var yPos = Math.floor((y - currentPosition.y) / spriteDimension);
+    var xPos = Math.floor((x - backgroundPosition.x) / (spriteDimension * scale));
+    var yPos = Math.floor((y - backgroundPosition.y) / (spriteDimension * scale));
 
     return "Pos: " + xPos + ", " + yPos;
 };
@@ -52,14 +45,11 @@ var game = cc.Layer.extend({
             tileMap[i] = new Array(height);
         }
 
-        startX = ((480 - (width * spriteDimension)) / 2);
-        startY = ((480 - (height * spriteDimension)) / 2);
-
         for (var x = 0; x < width; x++) {
             for (var y = 0; y < height; y++) {
                 tileMap[x][y] = new BackgroundTile();
                 backgroundLayer.addChild(tileMap[x][y], 0);
-                tileMap[x][y].setPosition(x * spriteDimension + startX, y * spriteDimension + startY);
+                tileMap[x][y].setPosition(x * spriteDimension, y * spriteDimension);
             }
         }
 
@@ -68,6 +58,7 @@ var game = cc.Layer.extend({
         textLayer = cc.Layer.create();
 
         backgroundLayer.addChild(meh, 1);
+        backgroundLayer.setAnchorPoint({x: 0, y: 0});
 
         tileText = cc.LabelTTF.create("test", "Arial", "32", cc.TEXT_ALIGNMENT_LEFT);
         textLayer.addChild(tileText);
@@ -95,7 +86,7 @@ var game = cc.Layer.extend({
         backgroundLayer.setPosition(originalPosition.x + currentPosition.x - startPosition.x, originalPosition.y + currentPosition.y - startPosition.y);
         layerPosition = backgroundLayer.getPosition();
         tileText.setString(getCurrentTilePosition(mousePosition.x, mousePosition.y));
-        backgroundLayer.setScale(scale += (mouseScroll/1000));
+        backgroundLayer.setScale(scale += (mouseScroll / 1000));
         mouseScroll = 0;
         //var eyeZ = cc.Camera.getZEye();
         //camera.setEye(eyeX += dt, 0, eyeZ);
@@ -103,7 +94,7 @@ var game = cc.Layer.extend({
     },
     onTouchBegan: function (touch, event) {
         pos = touch.getLocation();
-        meh.setPosition(pos.x - originalPosition.x, pos.y - originalPosition.y);
+        meh.setPosition((pos.x - backgroundLayer.x ) / scale, (pos.y - backgroundLayer.y) / scale);
         startPosition = pos;
         currentPosition = pos;
 
