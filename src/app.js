@@ -22,7 +22,7 @@ var tileText;
 var mousePosition = {x: 0, y: 0};
 var mouseScroll = 1;
 
-const spriteDimension = 64;
+const spriteDimension = 32;
 
 var getCurrentTilePosition = function (x, y) {
     var backgroundPosition = backgroundLayer.getPosition();
