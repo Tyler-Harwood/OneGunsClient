@@ -12,23 +12,22 @@ var textLayer;
 var width = 20;
 var height = 20;
 var scale = 1;
-var pos = {x: 0, y: 0};
+var pos = cc.p(0,0);
 var meh;
-var originalPosition = {x: 0, y: 0};
-var startPosition = {x: 0, y: 0};
-var currentPosition = {x: 0, y: 0};
-var layerPosition = {x: 0, y: 0};
+var originalPosition = cc.p(0,0);
+var startPosition = cc.p(0,0);
+var currentPosition = cc.p(0,0);
 var tileText;
-var mousePosition = {x: 0, y: 0};
+var mousePosition = cc.p(0,0);
 var mouseScroll = 1;
 
 const spriteDimension = 32;
 
 var getCurrentTilePosition = function (x, y) {
-    var backgroundPosition = backgroundLayer.getPosition();
+    var backgroundPosition = backgroundLayer.convertToNodeSpaceAR(cc.p(x,y));
 
-    var xPos = Math.floor((x - backgroundPosition.x) / (spriteDimension * scale));
-    var yPos = Math.floor((y - backgroundPosition.y) / (spriteDimension * scale));
+    var xPos = Math.floor(backgroundPosition.x / spriteDimension);
+    var yPos = Math.floor(backgroundPosition.y / spriteDimension);
 
     return "Pos: " + xPos + ", " + yPos;
 };
@@ -58,7 +57,7 @@ var game = cc.Layer.extend({
         textLayer = cc.Layer.create();
 
         backgroundLayer.addChild(meh, 1);
-        backgroundLayer.setAnchorPoint({x: 0, y: 0});
+        backgroundLayer.setAnchorPoint(cc.p(0,0));
 
         tileText = cc.LabelTTF.create("test", "Arial", "32", cc.TEXT_ALIGNMENT_LEFT);
         textLayer.addChild(tileText);
@@ -82,28 +81,18 @@ var game = cc.Layer.extend({
         this.scheduleUpdate();
     },
     update: function (dt) {
-        //cc.log("jump");
-        backgroundLayer.setPosition(originalPosition.x + currentPosition.x - startPosition.x, originalPosition.y + currentPosition.y - startPosition.y);
-        layerPosition = backgroundLayer.getPosition();
-        tileText.setString(getCurrentTilePosition(mousePosition.x, mousePosition.y));
-        backgroundLayer.setScale(scale += (mouseScroll / 1000));
-        mouseScroll = 0;
-        //var eyeZ = cc.Camera.getZEye();
-        //camera.setEye(eyeX += dt, 0, eyeZ);
-        //camera.setCenter(eyeX += dt, 0, 0);
     },
     onTouchBegan: function (touch, event) {
         pos = touch.getLocation();
-        meh.setPosition((pos.x - backgroundLayer.x ) / scale, (pos.y - backgroundLayer.y) / scale);
+        meh.setPosition(backgroundLayer.convertToNodeSpaceAR(pos));//(pos.x - backgroundLayer.x ) / scale, (pos.y - backgroundLayer.y) / scale);
         startPosition = pos;
-        currentPosition = pos;
 
         return true;
     },
     onTouchMoved: function (touch, event) {
         //if (lastMovePosition == null) {
         currentPosition = touch.getLocation();
-
+        backgroundLayer.setPosition(originalPosition.x + currentPosition.x - startPosition.x, originalPosition.y + currentPosition.y - startPosition.y);
         //}
         //pos = touch.getLocation();
         //var test = touch.getLocation()
@@ -111,16 +100,16 @@ var game = cc.Layer.extend({
 
     },
     onTouchEnded: function (touch, event) {
-        originalPosition = layerPosition;
-        startPosition = {x: 0, y: 0};
-        currentPosition = {x: 0, y: 0};
+        originalPosition = backgroundLayer.getPosition();
         //pos = touch.getLocation();
         //meh.setPosition(pos);
     },
     onMouseMove: function (event) {
         mousePosition = event.getLocation();
+        tileText.setString(getCurrentTilePosition(mousePosition.x, mousePosition.y));
     },
     onMouseScroll: function (event) {
         mouseScroll = event.getScrollY();
+        backgroundLayer.setScale(scale += (mouseScroll / 1000));
     }
 });
