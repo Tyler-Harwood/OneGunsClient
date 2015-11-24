@@ -1,17 +1,18 @@
 {
-    "debugMode" : 0,
-    "showFPS" : false,
-    "frameRate" : 60,
-    "id" : "gameCanvas",
-    "renderMode" : 0,
-    "engineDir":"cocos2d-html5/",
-
-    "modules" : ["cocos2d"],
-
-    "jsList" : [
-        "src/loadassets.js",
-        "src/app.js",
-        "src/BackgroundTile.js",
-        "src/TestPlayer.js"
-    ]
+  "debugMode": 0,
+  "showFPS": false,
+  "frameRate": 60,
+  "id": "gameCanvas",
+  "renderMode": 0,
+  "engineDir": "cocos2d-html5/",
+  "modules": [
+    "cocos2d"
+  ],
+  "jsList": [
+    "src/loadassets.js",
+    "src/GameLayer.js",
+    "src/app.js",
+    "src/BackgroundTile.js",
+    "src/TestPlayer.js"
+  ]
 }
