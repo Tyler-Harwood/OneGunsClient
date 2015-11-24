@@ -103,7 +103,7 @@ var GameLayer = cc.Layer.extend({
     onMouseMove: function (event) {
         var test = event.getCurrentTarget();
         test.mousePosition = event.getLocation();
-        var text = test.getCurrentTilePosition(test.mousePosition.x, test.mousePosition.y);
+        var text = test.getCurrentTilePosition(test.mousePosition);
         test.tileText.setString(text);
     },
     onMouseScroll: function (event) {
@@ -111,8 +111,8 @@ var GameLayer = cc.Layer.extend({
         test.mouseScroll = event.getScrollY();
         test.backgroundLayer.setScale(test.currentScale += (test.mouseScroll / 1000));
     },
-    getCurrentTilePosition: function (x, y) {
-        var backgroundPosition = this.backgroundLayer.convertToNodeSpaceAR(cc.p(x, y));
+    getCurrentTilePosition: function (point) {
+        var backgroundPosition = this.backgroundLayer.convertToNodeSpaceAR(point);
 
         var xPos = Math.floor(backgroundPosition.x / spriteDimension);
         var yPos = Math.floor(backgroundPosition.y / spriteDimension);
