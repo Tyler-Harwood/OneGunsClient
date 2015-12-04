@@ -10,9 +10,11 @@
   ],
   "jsList": [
     "src/loadassets.js",
-    "src/GameLayer.js",
+    "src/PresentationLayer.js",
     "src/app.js",
     "src/BackgroundTile.js",
+    "src/GameMap.js",
+    "src/Globals.js",
     "src/TestPlayer.js"
   ]
 }

@@ -1,4 +1,4 @@
-var GameLayer = cc.Layer.extend({
+var PresentationLayer = cc.Layer.extend({
     backgroundLayer: null,
     textLayer: null,
     tileWidth: 0,
@@ -12,9 +12,10 @@ var GameLayer = cc.Layer.extend({
     tileText: null,
     mousePosition: null,
     mouseScroll: null,
+    gameMap: null,
     ctor: function (space) {
         this._super();
-
+        this.init();
     },
     init: function () {
         this._super();
@@ -31,19 +32,27 @@ var GameLayer = cc.Layer.extend({
         this.backgroundLayer = cc.LayerColor.create(new cc.Color(40, 40, 40, 255), 480, 480);
         this.addChild(this.backgroundLayer);
 
-        var tileMap = new Array(this.tileWidth);
-
-        for (var i = 0; i < this.tileWidth; i++) {
-            tileMap[i] = new Array(this.tileHeight);
-        }
-
+        var gameMap = new GameMap();
+        var tileMap = gameMap.getTileMap();
         for (var x = 0; x < this.tileWidth; x++) {
             for (var y = 0; y < this.tileHeight; y++) {
-                tileMap[x][y] = new BackgroundTile();
                 this.backgroundLayer.addChild(tileMap[x][y], 0);
-                tileMap[x][y].setPosition(x * spriteDimension, y * spriteDimension);
             }
         }
+
+        //var tileMap = new Array(this.tileWidth);
+        //
+        //for (var i = 0; i < this.tileWidth; i++) {
+        //    tileMap[i] = new Array(this.tileHeight);
+        //}
+        //
+        //for (var x = 0; x < this.tileWidth; x++) {
+        //    for (var y = 0; y < this.tileHeight; y++) {
+        //        tileMap[x][y] = new BackgroundTile();
+        //        this.backgroundLayer.addChild(tileMap[x][y], 0);
+        //        tileMap[x][y].setPosition(x * SPRITE_SIZE, y * SPRITE_SIZE);
+        //    }
+        //}
 
         this.meh = new TestPlayer();
 
@@ -114,8 +123,8 @@ var GameLayer = cc.Layer.extend({
     getCurrentTilePosition: function (point) {
         var backgroundPosition = this.backgroundLayer.convertToNodeSpaceAR(point);
 
-        var xPos = Math.floor(backgroundPosition.x / spriteDimension);
-        var yPos = Math.floor(backgroundPosition.y / spriteDimension);
+        var xPos = Math.floor(backgroundPosition.x / SPRITE_SIZE);
+        var yPos = Math.floor(backgroundPosition.y / SPRITE_SIZE);
 
         return "Pos: " + xPos + ", " + yPos;
     },
