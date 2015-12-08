@@ -32,8 +32,8 @@ var PresentationLayer = cc.Layer.extend({
         this.backgroundLayer = cc.LayerColor.create(new cc.Color(40, 40, 40, 255), 480, 480);
         this.addChild(this.backgroundLayer);
 
-        var gameMap = new GameMap();
-        var tileMap = gameMap.getTileMap();
+        this.gameMap = new GameMap();
+        var tileMap = this.gameMap.getTileMap();
         for (var x = 0; x < this.tileWidth; x++) {
             for (var y = 0; y < this.tileHeight; y++) {
                 this.backgroundLayer.addChild(tileMap[x][y], 0);
@@ -48,7 +48,7 @@ var PresentationLayer = cc.Layer.extend({
         //
         //for (var x = 0; x < this.tileWidth; x++) {
         //    for (var y = 0; y < this.tileHeight; y++) {
-        //        tileMap[x][y] = new BackgroundTile();
+        //        tileMap[x][y] = new FloorTile();
         //        this.backgroundLayer.addChild(tileMap[x][y], 0);
         //        tileMap[x][y].setPosition(x * SPRITE_SIZE, y * SPRITE_SIZE);
         //    }
@@ -112,8 +112,14 @@ var PresentationLayer = cc.Layer.extend({
     onMouseMove: function (event) {
         var test = event.getCurrentTarget();
         test.mousePosition = event.getLocation();
-        var text = test.getCurrentTilePosition(test.mousePosition);
-        test.tileText.setString(text);
+        var tilePosition = test.getCurrentTilePosition(test.mousePosition);
+        var tileMap = test.gameMap;
+        var tile = tileMap.wtf(tilePosition);
+        var solid = "";
+        if (tile != null) {
+            solid = tile.getTileData().getImpassible();
+        }
+        test.tileText.setString("           Pos: " + tilePosition.x + ", " + tilePosition.y + " solid: " + solid);
     },
     onMouseScroll: function (event) {
         var test = event.getCurrentTarget();
@@ -126,7 +132,7 @@ var PresentationLayer = cc.Layer.extend({
         var xPos = Math.floor(backgroundPosition.x / SPRITE_SIZE);
         var yPos = Math.floor(backgroundPosition.y / SPRITE_SIZE);
 
-        return "Pos: " + xPos + ", " + yPos;
+        return cc.p(xPos, yPos);
     },
     update: function (dt) {
         var test = 1;
