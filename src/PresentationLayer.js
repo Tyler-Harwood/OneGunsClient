@@ -3,36 +3,35 @@ var PresentationLayer = cc.Layer.extend({
     textLayer: null,
     tileWidth: 0,
     tileHeight: 0,
+    seed: 0.0,
     currentScale: null,
-    pos: null,
-    meh: null,
-    originalPosition: null,
+    player: null,
+    originalLayerPosition: null,
     startPosition: null,
-    currentPosition: null,
     tileText: null,
-    mousePosition: null,
     mouseScroll: null,
     gameMap: null,
-    ctor: function (space) {
+    ctor: function (tileWidth, tileHeight, seed) {
         this._super();
+
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
+        this.seed = seed;
+
         this.init();
     },
     init: function () {
         this._super();
 
-        this.tileWidth = 20;
-        this.tileHeight = 20;
         this.currentScale = 1;
-        this.pos = cc.p(0, 0);
-        this.originalPosition = cc.p(0, 0);
+
+        this.originalLayerPosition = cc.p(0, 0);
         this.startPosition = cc.p(0, 0);
-        this.currentPosition = cc.p(0, 0);
-        this.mousePosition = cc.p(0, 0);
         this.mouseScroll = 1;
         this.backgroundLayer = cc.LayerColor.create(new cc.Color(40, 40, 40, 255), 480, 480);
         this.addChild(this.backgroundLayer);
 
-        this.gameMap = new GameMap();
+        this.gameMap = new GameMap(this.tileWidth, this.tileHeight, this.seed);
         var tileMap = this.gameMap.getTileMap();
         for (var x = 0; x < this.tileWidth; x++) {
             for (var y = 0; y < this.tileHeight; y++) {
@@ -54,11 +53,11 @@ var PresentationLayer = cc.Layer.extend({
         //    }
         //}
 
-        this.meh = new TestPlayer();
+        this.player = new TestPlayer();
 
         this.textLayer = cc.Layer.create();
 
-        this.backgroundLayer.addChild(this.meh, 1);
+        this.backgroundLayer.addChild(this.player, 1);
         this.backgroundLayer.setAnchorPoint(cc.p(0, 0));
 
         this.tileText = cc.LabelTTF.create("test", "Arial", "32", cc.TEXT_ALIGNMENT_LEFT);
@@ -84,35 +83,26 @@ var PresentationLayer = cc.Layer.extend({
     onTouchesBegan: function (touches, event) {
         var touch = touches[0];
         var test = event.getCurrentTarget();
-        test.pos = touch.getLocation();
-        test.meh.setPosition(test.backgroundLayer.convertToNodeSpaceAR(test.pos));//(test.pos.x - backgroundLayer.x ) / test.currentScale, (test.pos.y - backgroundLayer.y) / test.currentScale);
-        test.startPosition = test.pos;
+        var pos = touch.getLocation();
+        test.player.setPosition(test.backgroundLayer.convertToNodeSpaceAR(pos));
+        test.startPosition = pos;
 
         return true;
     },
     onTouchesMoved: function (touches, event) {
         var touch = touches[0];
         var test = event.getCurrentTarget();
-        //if (lastMovePosition == null) {
-        test.currentPosition = touch.getLocation();
-        test.backgroundLayer.setPosition(test.originalPosition.x + test.currentPosition.x - test.startPosition.x, test.originalPosition.y + test.currentPosition.y - test.startPosition.y);
-        //}
-        //this.pos = touch.getLocation();
-        //var test = touch.getLocation()
-        //this.setPosition(test);
+        var currentPosition = touch.getLocation();
+        test.backgroundLayer.setPosition(test.originalLayerPosition.x + currentPosition.x - test.startPosition.x, test.originalLayerPosition.y + currentPosition.y - test.startPosition.y);
 
     },
     onTouchesEnded: function (touches, event) {
-        var touch = touches[0];
         var test = event.getCurrentTarget();
-        test.originalPosition = test.backgroundLayer.getPosition();
-        //this.pos = touch.getLocation();
-        //meh.setPosition(this.pos);
+        test.originalLayerPosition = test.backgroundLayer.getPosition();
     },
     onMouseMove: function (event) {
         var test = event.getCurrentTarget();
-        test.mousePosition = event.getLocation();
-        var tilePosition = test.getCurrentTilePosition(test.mousePosition);
+        var tilePosition = test.getCurrentTilePosition(event.getLocation());
         var tileMap = test.gameMap;
         var tile = tileMap.wtf(tilePosition);
         var solid = "";

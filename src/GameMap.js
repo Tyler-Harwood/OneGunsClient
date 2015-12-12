@@ -6,11 +6,11 @@ var GameMap = cc.Class.extend({
     tileWidth: 0,
     tileHeight: 0,
     /** Constructor
-     * @param spriteSheet {cc.SpriteBatchNode *}
-     * @param space {cp.Space *}
-     * @param pos {cc.p}
+     * @param tileWidth
+     * @param tileHeight
+     * @param seed
      */
-    ctor: function (seed) {
+    ctor: function (tileWidth, tileHeight, seed) {
         this.tileWidth = 20;
         this.tileHeight = 20;
 
