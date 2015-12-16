@@ -39,20 +39,6 @@ var PresentationLayer = cc.Layer.extend({
             }
         }
 
-        //var tileMap = new Array(this.tileWidth);
-        //
-        //for (var i = 0; i < this.tileWidth; i++) {
-        //    tileMap[i] = new Array(this.tileHeight);
-        //}
-        //
-        //for (var x = 0; x < this.tileWidth; x++) {
-        //    for (var y = 0; y < this.tileHeight; y++) {
-        //        tileMap[x][y] = new FloorTile();
-        //        this.backgroundLayer.addChild(tileMap[x][y], 0);
-        //        tileMap[x][y].setPosition(x * SPRITE_SIZE, y * SPRITE_SIZE);
-        //    }
-        //}
-
         this.player = new TestPlayer();
 
         this.textLayer = cc.Layer.create();
@@ -104,7 +90,7 @@ var PresentationLayer = cc.Layer.extend({
         var test = event.getCurrentTarget();
         var tilePosition = test.getCurrentTilePosition(event.getLocation());
         var tileMap = test.gameMap;
-        var tile = tileMap.wtf(tilePosition);
+        var tile = tileMap.getTile(tilePosition);
         var solid = "";
         if (tile != null) {
             solid = tile.getTileData().getImpassible();
