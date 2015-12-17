@@ -11,8 +11,8 @@ var GameMap = cc.Class.extend({
      * @param seed
      */
     ctor: function (tileWidth, tileHeight, seed) {
-        this.tileWidth = 20;
-        this.tileHeight = 20;
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
 
         this.randomizer = new Randomizer(seed);
 
@@ -51,7 +51,7 @@ var GameMap = cc.Class.extend({
             yPosition = y;
         }
 
-        if (xPosition >= this.width || xPosition < 0 || yPosition >= this.height || yPosition < 0) {
+        if (xPosition >= this.tileWidth || xPosition < 0 || yPosition >= this.tileHeight || yPosition < 0) {
             return null;
         } else {
             return this.tileMap[xPosition][yPosition];
@@ -66,24 +66,19 @@ var GameMap = cc.Class.extend({
 
         var validMoves = [];
 
-        for (var x = startX; x < endX; x++) {
-            for (var y = startY; y < endY; y++) {
-                //if () {
-                //
-                //}
+        for (var x = startX; x <= endX; x++) {
+            for (var y = startY; y <= endY; y++) {
+                if (Math.abs(currentTilePosition.x - x) + Math.abs(currentTilePosition.y - y) <= movementRange) {
+                    var tile = this.getTile(x, y);
+
+                    if (tile != null && !tile.getTileData().getImpassible()) {
+                        validMoves.push(cc.p(x, y));
+                    }
+                }
             }
         }
         //Loop over all tiles to bottom right corner
         //Check if the distance is within the movement range if so add it to the valid moves list
-    },
-    removeFromParent: function () {
-        this.space.removeStaticShape(this.shape);
-        this.shape = null;
-        this.sprite.removeFromParent();
-        this.sprite = null;
-    },
-
-    getShape: function () {
-        return this.shape;
+        return validMoves;
     }
 });
