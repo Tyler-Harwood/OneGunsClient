@@ -11,7 +11,9 @@ var PresentationLayer = cc.Layer.extend({
     tileText: null,
     mouseScroll: null,
     gameMap: null,
-    validMoves:[],
+    validMoves: [],
+    testPoints: [],
+    testPoint: cc.p(0, 0),
     ctor: function (tileWidth, tileHeight, seed) {
         this._super();
 
@@ -71,18 +73,35 @@ var PresentationLayer = cc.Layer.extend({
         var touch = touches[0];
         var test = event.getCurrentTarget();
         var pos = touch.getLocation();
+        var tempPoints = test.gameMap.getPathAStar(test.testPoint, test.getCurrentTilePosition(pos), 20);
+        test.testPoint = test.getCurrentTilePosition(pos);
+        test.testPoints.forEach(function (wtf) {
+            test.backgroundLayer.removeChild(wtf, true);
+        });
+        if (tempPoints != null) {
+            tempPoints.forEach(function (wtf) {
+                var blank_rectangle = cc.Sprite.create();
+                blank_rectangle.setColor(new cc.Color(0, 91, 225, 255));
+                blank_rectangle.setAnchorPoint(0, 0);
+                blank_rectangle.setPosition(wtf.x * 32, wtf.y * 32);
+                blank_rectangle.setTextureRect(cc.rect(0, 0, 32, 32));
+                blank_rectangle.setOpacity(180);
+                test.testPoints.push(blank_rectangle);
+                test.backgroundLayer.addChild(blank_rectangle, 2);
+            });
+        }
         test.player.setPosition(test.backgroundLayer.convertToNodeSpaceAR(pos));
 
-        test.validMoves.forEach(function(wtf) {
+        test.validMoves.forEach(function (wtf) {
             test.backgroundLayer.removeChild(wtf, true);
         });
 
-        var validMoves = test.gameMap.getValidMoves(test.getCurrentTilePosition(pos), 2);
+        var validMoves = test.gameMap.getValidMoves(test.getCurrentTilePosition(pos), 3);
 
-        validMoves.forEach(function(wtf) {
+        validMoves.forEach(function (wtf) {
             var blank_rectangle = cc.Sprite.create();
             blank_rectangle.setColor(new cc.Color(100, 20, 60, 255));
-            blank_rectangle.setAnchorPoint(0,0);
+            blank_rectangle.setAnchorPoint(0, 0);
             blank_rectangle.setPosition(wtf.x * 32, wtf.y * 32);
             blank_rectangle.setTextureRect(cc.rect(0, 0, 32, 32));
             blank_rectangle.setOpacity(180);
