@@ -1,8 +1,6 @@
-var GameMap = cc.Class.extend({
+var MapManager = cc.Class.extend({
     tileMap: null,
     randomizer: null,
-    sprite: null,
-    shape: null,
     tileWidth: 0,
     tileHeight: 0,
     /** Constructor

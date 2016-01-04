@@ -10,7 +10,7 @@ var PresentationLayer = cc.Layer.extend({
     startPosition: null,
     tileText: null,
     mouseScroll: null,
-    gameMap: null,
+    mapManager: null,
     validMoves: [],
     testPoints: [],
     testPoint: cc.p(0, 0),
@@ -34,8 +34,8 @@ var PresentationLayer = cc.Layer.extend({
         this.backgroundLayer = cc.LayerColor.create(new cc.Color(40, 40, 40, 255), 480, 480);
         this.addChild(this.backgroundLayer);
 
-        this.gameMap = new GameMap(this.tileWidth, this.tileHeight, this.seed);
-        var tileMap = this.gameMap.getTileMap();
+        this.mapManager = new MapManager(this.tileWidth, this.tileHeight, this.seed);
+        var tileMap = this.mapManager.getTileMap();
         for (var x = 0; x < this.tileWidth; x++) {
             for (var y = 0; y < this.tileHeight; y++) {
                 this.backgroundLayer.addChild(tileMap[x][y], 0);
@@ -73,7 +73,7 @@ var PresentationLayer = cc.Layer.extend({
         var touch = touches[0];
         var test = event.getCurrentTarget();
         var pos = touch.getLocation();
-        var tempPoints = test.gameMap.getPathAStar(test.testPoint, test.getCurrentTilePosition(pos), 20);
+        var tempPoints = test.mapManager.getPathAStar(test.testPoint, test.getCurrentTilePosition(pos), 20);
         test.testPoint = test.getCurrentTilePosition(pos);
         test.testPoints.forEach(function (wtf) {
             test.backgroundLayer.removeChild(wtf, true);
@@ -96,7 +96,7 @@ var PresentationLayer = cc.Layer.extend({
             test.backgroundLayer.removeChild(wtf, true);
         });
 
-        var validMoves = test.gameMap.getValidMoves(test.getCurrentTilePosition(pos), 3);
+        var validMoves = test.mapManager.getValidMoves(test.getCurrentTilePosition(pos), 5);
 
         validMoves.forEach(function (wtf) {
             var blank_rectangle = cc.Sprite.create();
@@ -127,7 +127,7 @@ var PresentationLayer = cc.Layer.extend({
     onMouseMove: function (event) {
         var test = event.getCurrentTarget();
         var tilePosition = test.getCurrentTilePosition(event.getLocation());
-        var tileMap = test.gameMap;
+        var tileMap = test.mapManager;
         var tile = tileMap.getTile(tilePosition);
         var solid = "";
         if (tile != null) {

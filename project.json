@@ -15,7 +15,7 @@
     "src/Tiles/FloorTile.js",
     "src/Tiles/WallTile.js",
     "src/Tiles/TileData.js",
-    "src/GameMap.js",
+    "src/MapManager.js",
     "src/Globals.js",
     "src/TestPlayer.js"
   ]
